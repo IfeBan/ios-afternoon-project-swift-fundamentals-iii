@@ -19,51 +19,58 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var pesoButton: UIButton!
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+       cadButton.isSelected = true
     }
     
     enum CurrencyType {
         case cad
         case peso
     }
+    
     var currencyType: CurrencyType = .cad
     
-    
     @IBAction func convertButtonPressed(_ sender: Any) {
-        toCurrencyTextField.text = String(convert(dollars: convertFunc(currency: fromCurrencyTextField.text), to: currencyType))
+        guard let currency = fromCurrencyTextField.text,
+            let dollarAmount = Double(currency) else {
+                return
+        }
+        toCurrencyTextField.text = String( convert(dollars: dollarAmount , to: currencyType))
     }
         
     @IBAction func pesoButtonPressed(_ sender: Any) {
-        toCurrencyTextField.text = "Currency (Peso)"
-        pesoButton.isSelected.toggle()
+        toggleCurrency()
     }
-    
     
     @IBAction func cadButtonPressed(_ sender: Any) {
-        toCurrencyTextField.text = "Currency (CAD)"
-        cadButton.isSelected.toggle()
+        toggleCurrency()
     }
     
-    func convertFunc(currency: String?) -> Double {
-        guard let currencyText = currency else {
-            return 0.0
-            
+    func toggleCurrency() {
+        // change label based on currency selected
+        // toggle button when clicked
+        // select the correct currency
+        
+        cadButton.isSelected.toggle()
+        pesoButton.isSelected.toggle()
+        
+        if cadButton.isSelected {
+            currencyType = .cad
+            toCurrencyLabel.text = "Currency (CAD)"
+        } else {
+            currencyType = .peso
+            toCurrencyLabel.text = "Currency (Peso)"
         }
-        return Double(currencyText)!
     }
+    
     
     func convert (dollars: Double, to unit: CurrencyType) -> Double {
-        guard let currency = fromCurrencyTextField.text else {
-            return 1.0
-        }
+        
         if unit == CurrencyType.cad {
-           return Double(currency)! * (1.35)
+           return dollars * (1.35)
         } else if unit == CurrencyType.peso {
-            return Double(currency)! * (19.78)
+            return dollars * (19.78)
         }
         return 0.0
     }
